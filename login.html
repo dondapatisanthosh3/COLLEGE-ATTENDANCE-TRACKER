@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Login to College Attendance Tracker">
+    <meta name="theme-color" content="#2563eb">
+    <title>Login - College Attendance Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 45px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .login-header p {
+            font-size: 0.95rem;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .form-toggle {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .form-toggle a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .form-toggle a:hover {
+            text-decoration: underline;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .subscription-plans {
+            margin: 24px 0;
+            display: none;
+        }
+
+        .subscription-plans.show {
+            display: block;
+        }
+
+        .subscription-plans h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .plan-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .plan-option {
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .plan-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .plan-option.selected {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+        }
+
+        .plan-option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .plan-option label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: #111827;
+            margin: 0;
+        }
+
+        .plan-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .plan-price {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-left: auto;
+        }
+
+        .plan-features {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 8px;
+            margin-left: 28px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header" id="login-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in to track your attendance</p>
+            </div>
+            <div class="login-header" id="register-header" style="display: none;">
+                <h1>Create Account</h1>
+                <p>Join us to start tracking your attendance</p>
+            </div>
+
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+
+            <div id="login-section" class="form-section active">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                    </div>
+
+                    <button type="submit" class="login-btn">Sign In</button>
+                </form>
+
+                <div class="form-toggle">
+                    Don't have an account? <a id="show-register">Create Account</a>
+                </div>
+            </div>
+
+            <div id="register-section" class="form-section">
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="reg-username">Username</label>
+                        <input type="text" id="reg-username" name="reg-username" placeholder="Choose a username" required autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-email">Email</label>
+                        <input type="email" id="reg-email" name="reg-email" placeholder="Enter your email" required autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" name="reg-password" placeholder="Create a password" required autocomplete="new-password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-confirm-password">Confirm Password</label>
+                        <input type="password" id="reg-confirm-password" name="reg-confirm-password" placeholder="Confirm your password" required autocomplete="new-password">
+                    </div>
+
+
+                    <div class="subscription-plans" id="subscription-plans">
+                        <h3>Choose a Subscription Plan</h3>
+                        <div class="plan-options">
+                            <div class="plan-option">
+                                <label>
+                                    <input type="radio" name="subscription" value="free" checked>
+                                    <div>
+                                        <div class="plan-name">Free Plan</div>
+                                        <div class="plan-features">Basic attendance tracking</div>
+                                    </div>
+                                    <span class="plan-price">$0/month</span>
+                                </label>
+                            </div>
+                            <div class="plan-option">
+                                <label>
+                                    <input type="radio" name="subscription" value="basic">
+                                    <div>
+                                        <div class="plan-name">Basic Plan</div>
+                                        <div class="plan-features">Advanced analytics & reports</div>
+                                    </div>
+                                    <span class="plan-price">$9.99/month</span>
+                                </label>
+                            </div>
+                            <div class="plan-option">
+                                <label>
+                                    <input type="radio" name="subscription" value="premium">
+                                    <div>
+                                        <div class="plan-name">Premium Plan</div>
+                                        <div class="plan-features">All features + priority support</div>
+                                    </div>
+                                    <span class="plan-price">$19.99/month</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-btn">Create Account</button>
+                </form>
+
+                <div class="form-toggle">
+                    Already have an account? <a id="show-login">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'index.html';
+        }
+
+        function getStoredUsers() {
+            const users = localStorage.getItem('registeredUsers');
+            return users ? JSON.parse(users) : {};
+        }
+
+        function getStoredSubscriptions() {
+            const subscriptions = localStorage.getItem('userSubscriptions');
+            return subscriptions ? JSON.parse(subscriptions) : {};
+        }
+
+
+        const loginSection = document.getElementById('login-section');
+        const registerSection = document.getElementById('register-section');
+        const showRegisterBtn = document.getElementById('show-register');
+        const showLoginBtn = document.getElementById('show-login');
+        const subscriptionPlans = document.getElementById('subscription-plans');
+
+        const loginHeader = document.getElementById('login-header');
+        const registerHeader = document.getElementById('register-header');
+
+        showRegisterBtn.addEventListener('click', function() {
+            loginSection.classList.remove('active');
+            registerSection.classList.add('active');
+            subscriptionPlans.classList.add('show');
+            loginHeader.style.display = 'none';
+            registerHeader.style.display = 'block';
+            clearMessages();
+        });
+
+        showLoginBtn.addEventListener('click', function() {
+            registerSection.classList.remove('active');
+            loginSection.classList.add('active');
+            subscriptionPlans.classList.remove('show');
+            registerHeader.style.display = 'none';
+            loginHeader.style.display = 'block';
+            clearMessages();
+        });
+
+
+        const planOptions = document.querySelectorAll('.plan-option');
+        planOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                planOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+            });
+        });
+
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            clearMessages();
+
+            if (!username || !password) {
+                showError('Please enter both username and password');
+                return;
+            }
+
+            const users = getStoredUsers();
+            
+            if (users[username] && users[username].password === password) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', username);
+                window.location.href = 'index.html';
+            } else {
+                showError('Invalid username or password');
+            }
+        });
+
+        const registerForm = document.getElementById('register-form');
+
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('reg-username').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+            const subscription = document.querySelector('input[name="subscription"]:checked').value;
+
+            clearMessages();
+
+            
+            if (!username || !email || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
+
+            const users = getStoredUsers();
+            
+            if (users[username]) {
+                showError('Username already exists. Please choose another one.');
+                return;
+            }
+
+
+            const existingUser = Object.values(users).find(user => user.email === email);
+            if (existingUser) {
+                showError('Email is already registered. Please use a different email.');
+                return;
+            }
+
+
+            users[username] = {
+                username: username,
+                email: email,
+                password: password,
+                subscription: subscription,
+                createdAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('registeredUsers', JSON.stringify(users));
+
+
+            const subscriptions = getStoredSubscriptions();
+            subscriptions[username] = {
+                plan: subscription,
+                status: subscription === 'free' ? 'active' : 'pending',
+                startDate: new Date().toISOString()
+            };
+            localStorage.setItem('userSubscriptions', JSON.stringify(subscriptions));
+
+            showSuccess('Account created successfully! Redirecting to login...');
+
+            setTimeout(function() {
+                registerSection.classList.remove('active');
+                loginSection.classList.add('active');
+                subscriptionPlans.classList.remove('show');
+                registerForm.reset();
+                document.getElementById('username').value = username;
+                clearMessages();
+            }, 2000);
+        });
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            successMessage.classList.remove('show');
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.classList.add('show');
+            errorMessage.classList.remove('show');
+        }
+
+        function clearMessages() {
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+        }
+
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const users = getStoredUsers();
+            if (Object.keys(users).length === 0) {
+
+                const demoUsers = {
+                    'demo': {
+                        username: 'demo',
+                        password: 'demo123',
+                        email: 'demo@example.com',
+                        subscription: 'free',
+                        createdAt: new Date().toISOString()
+                    }
+                };
+                localStorage.setItem('registeredUsers', JSON.stringify(demoUsers));
+                
+
+                const demoSubscriptions = {
+                    'demo': {
+                        plan: 'free',
+                        status: 'active',
+                        startDate: new Date().toISOString()
+                    }
+                };
+                localStorage.setItem('userSubscriptions', JSON.stringify(demoSubscriptions));
+            }
+        });
+    </script>
+</body>
+</html>
+

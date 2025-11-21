@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Track and manage your college attendance with precision. Monitor your attendance percentage and stay on top of your academic goals.">
+    <meta name="theme-color" content="#2563eb">
+    <title>College Attendance Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --card-shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.12);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 50px 30px;
+            background: var(--bg-gradient);
+            border-radius: var(--border-radius);
+            color: white;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .card {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .card:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .card-title {
+            font-size: 1.65rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 5px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-radius: 3px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            border-left: 5px solid var(--primary-color);
+            padding: 24px;
+            margin-bottom: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .info-box strong {
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        /* Form Styling */
+        #add-subject-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 0;
+        }
+
+        #add-subject-form input[type="text"],
+        #add-subject-form input[type="number"] {
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+            background: #f9fafb;
+            color: var(--text-primary);
+        }
+
+        #add-subject-form input[type="text"]:focus,
+        #add-subject-form input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        #add-subject-form button {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        #add-subject-form button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
+        }
+
+     
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--border-radius);
+        }
+
+        #attendance-list {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        #attendance-list thead {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+
+        #attendance-list th {
+            padding: 20px 24px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        #attendance-list td {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.95rem;
+        }
+
+        #attendance-list tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+       
+        .status-safe {
+            display: inline-block;
+            color: white;
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .status-danger {
+            display: inline-block;
+            color: white;
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .percentage-cell {
+            font-weight: 600;
+            color: #111827;
+            font-size: 1.1rem;
+        }
+
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .present-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .missed-btn {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+            color: white;
+        }
+
+       
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state::before {
+            content: '📊';
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 35px 20px;
+                margin-bottom: 30px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 25px 20px;
+            }
+
+            #add-subject-form {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+
+        .subscription-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .subscription-badge.premium {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 40px;
+            border-bottom: 1px solid #e5e7eb;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-body {
+            padding: 40px;
+        }
+
+        /* Subscription Plans */
+        .subscription-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .subscription-plan {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .subscription-plan:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .premium-plan {
+            border-color: var(--warning-color);
+            border-width: 3px;
+        }
+
+        .plan-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .plan-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 20px;
+        }
+
+        .premium-btn {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+            color: white;
+        }
+
+        /* History Styles */
+        .history-filter {
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-right: 10px;
+            margin-bottom: 15px;
+        }
+
+        .history-entry {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .history-entry-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .history-entry-action {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .history-entry-action.present {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            color: white;
+        }
+
+        .history-entry-action.missed {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+            color: white;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3) !important;
+            transform: translateY(-2px);
+        }
+
+       
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .calendar-wrapper {
+            background: #f9fafb;
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .calendar-nav-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 10px;
+            font-size: 0.875rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+            position: relative;
+            padding: 5px;
+        }
+
+        .calendar-day:hover {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.4;
+        }
+
+        .calendar-day.has-event {
+            border-color: var(--warning-color);
+        }
+
+        .calendar-day.has-event::after {
+            content: '•';
+            position: absolute;
+            bottom: 5px;
+            color: var(--warning-color);
+            font-size: 1.5rem;
+        }
+
+        .calendar-day-number {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .events-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+
+        .event-item {
+            background: #f9fafb;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .event-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-item.holiday {
+            border-left-color: var(--danger-color);
+        }
+
+        .event-item.exam {
+            border-left-color: var(--warning-color);
+        }
+
+        .event-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .event-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .event-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .add-event-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .add-event-form input,
+        .add-event-form select {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .add-event-form button {
+            padding: 12px 24px;
+            background: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .academic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .academic-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .academic-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .academic-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .academic-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .academic-info-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .academic-info-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .semester-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .semester-btn {
+            padding: 12px 24px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .semester-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .academic-schedule {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .schedule-item {
+            display: grid;
+            grid-template-columns: 100px 1fr 150px;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+        }
+
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-time {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .schedule-subject {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .schedule-location {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-container {
+                grid-template-columns: 1fr;
+            }
+
+            .add-event-form {
+                grid-template-columns: 1fr;
+            }
+
+            .academic-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .schedule-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <div style="flex: 1;">
+                    <h1>College Attendance Tracker<span id="subscription-badge-header" class="subscription-badge" style="display: none;"></span></h1>
+                    <p>Monitor and manage your academic attendance with precision</p>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <button id="calendar-btn" class="nav-btn" style="background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); color: white; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition);">📅 Campus Calendar</button>
+                    <button id="academic-btn" class="nav-btn" style="background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); color: white; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition);">🎓 Academic</button>
+                    <button id="subscription-btn" style="background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); color: white; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition);">Subscription</button>
+                    <button id="logout-btn" style="background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); color: white; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition);">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div id="attendance-section" class="section active">
+            <div class="card">
+                <div class="info-box">
+                    <strong>Attendance Goal:</strong> The minimum required attendance is set to <strong>75%</strong>. All calculations and status indicators are based on this requirement.
+                </div>
+
+                <h2 class="card-title">Add New Subject</h2>
+                <form id="add-subject-form">
+                    <input type="text" id="subject-name" placeholder="Subject Name (e.g., Data Structures)" required>
+                    <input type="number" id="initial-attended" placeholder="Classes Attended" value="0" min="0" required>
+                    <input type="number" id="initial-total" placeholder="Total Classes Held" value="0" min="0" required>
+                    <button type="submit">Add Subject</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: flex-start; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button id="view-history-btn" class="action-btn present-btn" style="padding: 12px 24px;">📜 View History</button>
+                    <h2 class="card-title" style="margin-bottom: 0;">Your Subjects</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table id="attendance-list">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Attended</th>
+                                <th>Total</th>
+                                <th>Percentage</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subject-data">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="calendar-section" class="section">
+            <div class="card">
+                <h2 class="card-title">📅 Campus Calendar</h2>
+                <div class="calendar-container">
+                    <div class="calendar-wrapper">
+                        <div class="calendar-header">
+                            <button class="calendar-nav-btn" id="prev-month">← Prev</button>
+                            <h3 id="calendar-month-year" style="margin: 0; font-size: 1.3rem; color: var(--text-primary);"></h3>
+                            <button class="calendar-nav-btn" id="next-month">Next →</button>
+                        </div>
+                        <div class="calendar-grid" id="calendar-grid">
+                        </div>
+                    </div>
+                    <div class="events-panel">
+                        <h3 style="margin-bottom: 20px; color: var(--text-primary);">Upcoming Events</h3>
+                        <div id="events-list">
+                            
+                        </div>
+                        <div class="add-event-form">
+                            <input type="date" id="event-date" required>
+                            <select id="event-type" required>
+                                <option value="event">Event</option>
+                                <option value="holiday">Holiday</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                            <button type="button" id="add-event-btn">Add Event</button>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <input type="text" id="event-title" placeholder="Event Title" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; margin-bottom: 10px;">
+                            <textarea id="event-description" placeholder="Event Description (optional)" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; min-height: 80px; resize: vertical; font-family: inherit;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="academic-section" class="section">
+            <div class="card">
+                <h2 class="card-title">🎓 Academic Information</h2>
+                <div class="semester-selector">
+                    <button class="semester-btn active" data-semester="fall2024">Fall 2024</button>
+                    <button class="semester-btn" data-semester="spring2025">Spring 2025</button>
+                    <button class="semester-btn" data-semester="summer2025">Summer 2025</button>
+                </div>
+                <div class="academic-grid">
+                    <div class="academic-card">
+                        <h3>📚 Semester Overview</h3>
+                        <div class="academic-info">
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Semester:</span>
+                                <span class="academic-info-value" id="current-semester">Fall 2024</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Start Date:</span>
+                                <span class="academic-info-value" id="semester-start">Aug 26, 2024</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">End Date:</span>
+                                <span class="academic-info-value" id="semester-end">Dec 15, 2024</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Total Weeks:</span>
+                                <span class="academic-info-value">16 weeks</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="academic-card">
+                        <h3>📊 Academic Stats</h3>
+                        <div class="academic-info">
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Total Subjects:</span>
+                                <span class="academic-info-value" id="total-subjects">0</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Average Attendance:</span>
+                                <span class="academic-info-value" id="avg-attendance">0%</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Credits Enrolled:</span>
+                                <span class="academic-info-value" id="total-credits">0</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">GPA Goal:</span>
+                                <span class="academic-info-value">3.5+</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="academic-card">
+                        <h3>📅 Important Dates</h3>
+                        <div class="academic-info">
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Midterm Exams:</span>
+                                <span class="academic-info-value">Oct 15-20</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Final Exams:</span>
+                                <span class="academic-info-value">Dec 10-15</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Registration:</span>
+                                <span class="academic-info-value">Nov 1-15</span>
+                            </div>
+                            <div class="academic-info-item">
+                                <span class="academic-info-label">Holidays:</span>
+                                <span class="academic-info-value">Thanksgiving</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="academic-schedule">
+                    <h3 style="margin-bottom: 20px; color: var(--text-primary);">📋 Weekly Schedule</h3>
+                    <div id="weekly-schedule">
+                        <div class="schedule-item">
+                            <div class="schedule-time">9:00 AM</div>
+                            <div>
+                                <div class="schedule-subject">Data Structures</div>
+                                <div class="schedule-location">Room 201, Building A</div>
+                            </div>
+                            <div>Mon, Wed, Fri</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-time">11:00 AM</div>
+                            <div>
+                                <div class="schedule-subject">Database Systems</div>
+                                <div class="schedule-location">Room 305, Building B</div>
+                            </div>
+                            <div>Tue, Thu</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-time">2:00 PM</div>
+                            <div>
+                                <div class="schedule-subject">Web Development</div>
+                                <div class="schedule-location">Lab 101, Building C</div>
+                            </div>
+                            <div>Mon, Wed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="subscription-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Subscription Plans</h2>
+                <button class="close-btn" id="close-subscription-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="subscription-plans">
+                    <div class="subscription-plan">
+                        <div class="plan-header">
+                            <h3>Free</h3>
+                            <div class="plan-price">$0<span style="font-size: 1rem;">/month</span></div>
+                        </div>
+                        <ul>
+                            <li>✓ Track up to 5 subjects</li>
+                            <li>✓ Basic attendance tracking</li>
+                            <li>✗ Export data</li>
+                            <li>✗ Unlimited subjects</li>
+                        </ul>
+                        <button class="plan-btn" disabled>Current Plan</button>
+                    </div>
+                    <div class="subscription-plan premium-plan">
+                        <div class="plan-header">
+                            <h3>Premium</h3>
+                            <div class="plan-price">$4.99<span style="font-size: 1rem;">/month</span></div>
+                        </div>
+                        <ul>
+                            <li>✓ Unlimited subjects</li>
+                            <li>✓ All free features</li>
+                            <li>✓ Export data</li>
+                            <li>✓ Priority support</li>
+                        </ul>
+                        <button class="plan-btn premium-btn" id="upgrade-premium-btn">Upgrade to Premium</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Attendance History</h2>
+                <button class="close-btn" id="close-history-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <select id="history-subject-filter" class="history-filter">
+                        <option value="">All Subjects</option>
+                    </select>
+                    <select id="history-action-filter" class="history-filter">
+                        <option value="">All Actions</option>
+                        <option value="present">Present Only</option>
+                        <option value="missed">Missed Only</option>
+                    </select>
+                    <button class="action-btn missed-btn" id="clear-history-btn" style="padding: 10px 20px;">Clear History</button>
+                </div>
+                <div id="history-content" style="max-height: 500px; overflow-y: auto; margin-top: 20px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const ATTENDANCE_GOAL = 75; 
+        const FREE_PLAN_MAX_SUBJECTS = 5;
+        let subjects = [];
+        let attendanceHistory = [];
+        let calendarEvents = [];
+        let currentCalendarDate = new Date();
+
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+
+        function calculateAttendance(subject) {
+            if (subject.total === 0) {
+                return {
+                    percentage: 0,
+                    status: 'N/A',
+                    canMiss: 'N/A',
+                    mustAttend: 'N/A'
+                };
+            }
+
+            const percentage = (subject.attended / subject.total) * 100;
+            const status = percentage >= ATTENDANCE_GOAL ? 'Safe' : 'Danger';
+
+            let canMiss = 0;
+            if (percentage >= ATTENDANCE_GOAL) {
+                const maxTotal = Math.floor(subject.attended * 100 / ATTENDANCE_GOAL);
+                canMiss = Math.max(0, maxTotal - subject.total);
+            }
+
+
+            let mustAttend = 0;
+            if (percentage < ATTENDANCE_GOAL) {
+                mustAttend = Math.ceil((ATTENDANCE_GOAL * subject.total - 100 * subject.attended) / (100 - ATTENDANCE_GOAL));
+                mustAttend = Math.max(0, mustAttend);
+            }
+
+            return {
+                percentage: percentage.toFixed(2),
+                status: status,
+                canMiss: canMiss > 0 ? canMiss : 0,
+                mustAttend: mustAttend
+            };
+        }
+
+
+        function renderSubjects() {
+            const tableBody = document.getElementById('subject-data');
+            tableBody.innerHTML = '';
+
+            if (subjects.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="empty-state">No subjects added yet. Add your first subject above to get started.</td></tr>';
+                return;
+            }
+
+            subjects.forEach((subject, index) => {
+                const data = calculateAttendance(subject);
+                const statusClass = data.status === 'Safe' ? 'status-safe' : 'status-danger';
+
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td><strong>${escapeHtml(subject.name)}</strong></td>
+                    <td>${subject.attended}</td>
+                    <td>${subject.total}</td>
+                    <td class="percentage-cell">${data.percentage}%</td>
+                    <td>
+                        <span class="${statusClass}">${data.status}</span>
+                        <div style="margin-top: 6px; font-size: 0.8rem; color: #6b7280;">
+                            ${data.status === 'Safe' ? 
+                                `Can miss: <strong>${data.canMiss}</strong> classes` : 
+                                `Must attend: <strong>${data.mustAttend}</strong> classes`
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn present-btn" data-index="${index}" data-action="present">Present</button>
+                            <button class="action-btn missed-btn" data-index="${index}" data-action="missed">Missed</button>
+                        </div>
+                    </td>
+                `;
+            });
+
+
+            tableBody.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const action = this.getAttribute('data-action');
+                    updateAttendance(index, action);
+                });
+            });
+
+            saveSubjects();
+            updateAcademicStats();
+        }
+
+        function updateAttendance(index, type) {
+            if (index < 0 || index >= subjects.length || !subjects[index]) {
+                console.error('Invalid subject index:', index);
+                return;
+            }
+
+            const subject = subjects[index];
+
+            if (type === 'present') {
+                subject.attended++;
+                subject.total++;
+            } else if (type === 'missed') {
+                subject.total++;
+            } else {
+                console.error('Invalid attendance type:', type);
+                return;
+            }
+
+
+            addHistoryEntry(subject.name, type, {
+                attended: subject.attended,
+                total: subject.total,
+                percentage: calculateAttendance(subject).percentage
+            });
+
+            renderSubjects();
+            updateAcademicStats();
+        }
+
+
+        function addHistoryEntry(subjectName, action, stats) {
+            const historyEntry = {
+                id: Date.now() + Math.random(),
+                subjectName: subjectName,
+                action: action,
+                date: new Date().toISOString(),
+                stats: stats
+            };
+            attendanceHistory.unshift(historyEntry);
+            saveHistory();
+        }
+
+        function getHistory(subjectFilter = null, actionFilter = null) {
+            let filtered = attendanceHistory;
+            if (subjectFilter) filtered = filtered.filter(e => e.subjectName === subjectFilter);
+            if (actionFilter) filtered = filtered.filter(e => e.action === actionFilter);
+            return filtered;
+        }
+
+        function saveHistory() {
+            try {
+                const username = localStorage.getItem('username');
+                if (username) {
+                    localStorage.setItem(`attendanceHistory_${username}`, JSON.stringify(attendanceHistory));
+                }
+            } catch (error) {
+                console.error('Failed to save history:', error);
+            }
+        }
+
+        function loadHistory() {
+            try {
+                const username = localStorage.getItem('username');
+                if (username) {
+                    const stored = localStorage.getItem(`attendanceHistory_${username}`);
+                    if (stored) attendanceHistory = JSON.parse(stored);
+                }
+            } catch (error) {
+                console.error('Failed to load history:', error);
+                attendanceHistory = [];
+            }
+        }
+
+        function renderHistory() {
+            const content = document.getElementById('history-content');
+            const subjectFilter = document.getElementById('history-subject-filter').value;
+            const actionFilter = document.getElementById('history-action-filter').value;
+            const filtered = getHistory(subjectFilter || null, actionFilter || null);
+
+            if (filtered.length === 0) {
+                content.innerHTML = '<div class="empty-state"><p>No history entries found.</p></div>';
+                return;
+            }
+
+            content.innerHTML = filtered.map(entry => {
+                const date = new Date(entry.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+                return `
+                    <div class="history-entry">
+                        <div class="history-entry-header">
+                            <div>
+                                <span class="history-entry-action ${entry.action}">${entry.action === 'present' ? '✓ Present' : '⚠ Missed'}</span>
+                                <strong>${escapeHtml(entry.subjectName)}</strong>
+                            </div>
+                            <span style="color: #6b7280; font-size: 0.85rem;">${formattedDate}</span>
+                        </div>
+                        <div style="margin-top: 10px; color: #6b7280;">
+                            Attended: <strong>${entry.stats.attended}</strong> | 
+                            Total: <strong>${entry.stats.total}</strong> | 
+                            Percentage: <strong>${entry.stats.percentage}%</strong>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+
+        function getSubscription() {
+            try {
+                const username = localStorage.getItem('username');
+                if (!username) return { plan: 'free' };
+                const key = `subscription_${username}`;
+                const sub = localStorage.getItem(key);
+                if (sub) {
+                    const parsed = JSON.parse(sub);
+                    if (parsed.endDate && new Date(parsed.endDate) < new Date()) {
+                        setSubscription('free');
+                        return { plan: 'free' };
+                    }
+                    return parsed;
+                }
+                return { plan: 'free' };
+            } catch (error) {
+                return { plan: 'free' };
+            }
+        }
+
+        function setSubscription(plan, months = 1) {
+            try {
+                const username = localStorage.getItem('username');
+                if (!username) return;
+                const key = `subscription_${username}`;
+                const subscription = {
+                    plan: plan,
+                    startDate: new Date().toISOString(),
+                    endDate: plan === 'premium' ? new Date(Date.now() + months * 30 * 24 * 60 * 60 * 1000).toISOString() : null
+                };
+                localStorage.setItem(key, JSON.stringify(subscription));
+                updateSubscriptionUI();
+            } catch (error) {
+                console.error('Failed to set subscription:', error);
+            }
+        }
+
+        function isPremium() {
+            return getSubscription().plan === 'premium';
+        }
+
+        function updateSubscriptionUI() {
+            const subscription = getSubscription();
+            const btn = document.getElementById('subscription-btn');
+            const badge = document.getElementById('subscription-badge-header');
+            
+            if (!btn) return;
+            
+            if (subscription.plan === 'premium') {
+                btn.textContent = '⭐ Premium';
+                btn.style.background = 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)';
+                if (badge) {
+                    badge.textContent = 'Premium';
+                    badge.classList.add('premium');
+                    badge.style.display = 'inline-flex';
+                }
+            } else {
+                btn.textContent = 'Subscription';
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+                if (badge) badge.style.display = 'none';
+            }
+        }
+
+
+        function saveSubjects() {
+            try {
+                const username = localStorage.getItem('username');
+                if (username) {
+                    localStorage.setItem(`attendanceTrackerSubjects_${username}`, JSON.stringify(subjects));
+                }
+            } catch (error) {
+                console.error('Failed to save subjects:', error);
+            }
+        }
+
+
+        function loadSubjects() {
+            try {
+                const username = localStorage.getItem('username');
+                if (username) {
+                    const storedSubjects = localStorage.getItem(`attendanceTrackerSubjects_${username}`);
+                    if (storedSubjects) {
+                        subjects = JSON.parse(storedSubjects);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load subjects:', error);
+                subjects = [];
+            }
+            renderSubjects();
+        }
+
+
+        function checkAuthentication() {
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+
+        function setupModals() {
+
+            const subBtn = document.getElementById('subscription-btn');
+            const subModal = document.getElementById('subscription-modal');
+            const closeSub = document.getElementById('close-subscription-modal');
+            const upgradeBtn = document.getElementById('upgrade-premium-btn');
+
+            if (subBtn && subModal && closeSub) {
+                subBtn.addEventListener('click', () => subModal.classList.add('show'));
+                closeSub.addEventListener('click', () => subModal.classList.remove('show'));
+                subModal.addEventListener('click', (e) => {
+                    if (e.target === subModal) subModal.classList.remove('show');
+                });
+            }
+
+            if (upgradeBtn) {
+                upgradeBtn.addEventListener('click', () => {
+                    if (confirm('Upgrade to Premium for $4.99/month? (Demo - no payment processed)')) {
+                        setSubscription('premium', 1);
+                        subModal.classList.remove('show');
+                        alert('Welcome to Premium!');
+                    }
+                });
+            }
+
+
+            const histBtn = document.getElementById('view-history-btn');
+            const histModal = document.getElementById('history-modal');
+            const closeHist = document.getElementById('close-history-modal');
+            const clearHist = document.getElementById('clear-history-btn');
+            const subjFilter = document.getElementById('history-subject-filter');
+            const actFilter = document.getElementById('history-action-filter');
+
+            if (histBtn && histModal && closeHist) {
+                histBtn.addEventListener('click', () => {
+                    if (subjFilter) {
+                        subjFilter.innerHTML = '<option value="">All Subjects</option>';
+                        subjects.forEach(s => {
+                            const opt = document.createElement('option');
+                            opt.value = s.name;
+                            opt.textContent = s.name;
+                            subjFilter.appendChild(opt);
+                        });
+                    }
+                    renderHistory();
+                    histModal.classList.add('show');
+                });
+                closeHist.addEventListener('click', () => histModal.classList.remove('show'));
+                histModal.addEventListener('click', (e) => {
+                    if (e.target === histModal) histModal.classList.remove('show');
+                });
+            }
+
+            if (subjFilter) subjFilter.addEventListener('change', renderHistory);
+            if (actFilter) actFilter.addEventListener('change', renderHistory);
+            if (clearHist) {
+                clearHist.addEventListener('click', () => {
+                    if (confirm('Clear all history? This cannot be undone.')) {
+                        attendanceHistory = [];
+                        saveHistory();
+                        renderHistory();
+                    }
+                });
+            }
+        }
+
+        function setupLogout() {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    if (confirm('Are you sure you want to logout?')) {
+                        localStorage.removeItem('isLoggedIn');
+                        localStorage.removeItem('username');
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+        }
+
+        document.getElementById('add-subject-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nameInput = document.getElementById('subject-name');
+            const attendedInput = document.getElementById('initial-attended');
+            const totalInput = document.getElementById('initial-total');
+
+            const newSubject = {
+                name: nameInput.value.trim(),
+                attended: parseInt(attendedInput.value) || 0,
+                total: parseInt(totalInput.value) || 0
+            };
+
+            if (!newSubject.name) {
+                alert('Please enter a subject name.');
+                nameInput.focus();
+                return;
+            }
+
+            if (newSubject.attended > newSubject.total) {
+                alert('Classes Attended cannot be greater than Total Classes Held!');
+                attendedInput.focus();
+                return;
+            }
+
+
+            if (subjects.some(s => s.name.toLowerCase() === newSubject.name.toLowerCase())) {
+                alert('A subject with this name already exists. Please use a different name.');
+                nameInput.focus();
+                return;
+            }
+
+
+            if (!isPremium() && subjects.length >= FREE_PLAN_MAX_SUBJECTS) {
+                const upgrade = confirm(`Free plan allows only ${FREE_PLAN_MAX_SUBJECTS} subjects. Upgrade to Premium?`);
+                if (upgrade) {
+                    document.getElementById('subscription-btn').click();
+                }
+                return;
+            }
+
+            subjects.push(newSubject);
+            renderSubjects();
+            updateAcademicStats();
+
+            nameInput.value = '';
+            attendedInput.value = '0';
+            totalInput.value = '0';
+            nameInput.focus();
+        });
+
+
+        function loadCalendarEvents() {
+            try {
+                const username = localStorage.getItem('username');
+                if (username) {
+                    const stored = localStorage.getItem(`calendarEvents_${username}`);
+                    if (stored) {
+                        calendarEvents = JSON.parse(stored);
+                    } else {
+
+                        const today = new Date();
+                        calendarEvents = [
+                            {
+                                id: Date.now(),
+                                date: new Date(today.getFullYear(), today.getMonth(), 15).toISOString().split('T')[0],
+                                title: 'Midterm Exams',
+                                type: 'exam',
+                                description: 'Midterm examination period'
+                            },
+                            {
+                                id: Date.now() + 1,
+                                date: new Date(today.getFullYear(), today.getMonth() + 1, 1).toISOString().split('T')[0],
+                                title: 'Thanksgiving Break',
+                                type: 'holiday',
+                                description: 'College closed for Thanksgiving'
+                            }
+                        ];
+                        saveCalendarEvents();
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load calendar events:', error);
+                calendarEvents = [];
+            }
+        }
+
+        function saveCalendarEvents() {
+            try {
+                const username = localStorage.getItem('username');
+                if (username) {
+                    localStorage.setItem(`calendarEvents_${username}`, JSON.stringify(calendarEvents));
+                }
+            } catch (error) {
+                console.error('Failed to save calendar events:', error);
+            }
+        }
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            document.getElementById('calendar-month-year').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            
+            const calendarGrid = document.getElementById('calendar-grid');
+            calendarGrid.innerHTML = '';
+            
+
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-day-header';
+                header.textContent = day;
+                calendarGrid.appendChild(header);
+            });
+            
+
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                day.innerHTML = `<span class="calendar-day-number">${daysInPrevMonth - i}</span>`;
+                calendarGrid.appendChild(day);
+            }
+            
+            const today = new Date();
+            for (let i = 1; i <= daysInMonth; i++) {
+                const day = document.createElement('div');
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const isToday = year === today.getFullYear() && month === today.getMonth() && i === today.getDate();
+                const hasEvent = calendarEvents.some(e => e.date === dateStr);
+                
+                if (isToday) day.className = 'calendar-day today';
+                else if (hasEvent) day.className = 'calendar-day has-event';
+                else day.className = 'calendar-day';
+                
+                day.innerHTML = `<span class="calendar-day-number">${i}</span>`;
+                day.addEventListener('click', () => {
+                    document.getElementById('event-date').value = dateStr;
+                });
+                calendarGrid.appendChild(day);
+            }
+            
+
+            const totalCells = calendarGrid.children.length;
+            const remainingCells = 42 - totalCells; // 6 rows * 7 days
+            for (let i = 1; i <= remainingCells; i++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                day.innerHTML = `<span class="calendar-day-number">${i}</span>`;
+                calendarGrid.appendChild(day);
+            }
+            
+            renderEvents();
+        }
+
+        function renderEvents() {
+            const eventsList = document.getElementById('events-list');
+            const sortedEvents = [...calendarEvents].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const upcomingEvents = sortedEvents.filter(e => new Date(e.date) >= new Date()).slice(0, 10);
+            
+            if (upcomingEvents.length === 0) {
+                eventsList.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No upcoming events. Add one below!</p>';
+                return;
+            }
+            
+            eventsList.innerHTML = upcomingEvents.map(event => {
+                const date = new Date(event.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', month: 'short', day: 'numeric' 
+                });
+                return `
+                    <div class="event-item ${event.type}">
+                        <div class="event-date">${formattedDate}</div>
+                        <div class="event-title">${escapeHtml(event.title)}</div>
+                        ${event.description ? `<div class="event-description">${escapeHtml(event.description)}</div>` : ''}
+                        <button class="delete-event-btn" data-event-id="${event.id}" style="margin-top: 10px; padding: 6px 12px; background: var(--danger-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Delete</button>
+                    </div>
+                `;
+            }).join('');
+            
+            eventsList.querySelectorAll('.delete-event-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const eventId = this.getAttribute('data-event-id');
+                    deleteEvent(eventId);
+                });
+            });
+        }
+
+        function deleteEvent(eventId) {
+            calendarEvents = calendarEvents.filter(e => String(e.id) !== String(eventId));
+            saveCalendarEvents();
+            renderCalendar();
+        }
+
+        function setupCalendar() {
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                renderCalendar();
+            });
+            
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                renderCalendar();
+            });
+            
+            document.getElementById('add-event-btn').addEventListener('click', () => {
+                const date = document.getElementById('event-date').value;
+                const type = document.getElementById('event-type').value;
+                const title = document.getElementById('event-title').value.trim();
+                const description = document.getElementById('event-description').value.trim();
+                
+                if (!date || !title) {
+                    alert('Please fill in date and title');
+                    return;
+                }
+                
+                const newEvent = {
+                    id: Date.now() + Math.random(),
+                    date: date,
+                    type: type,
+                    title: title,
+                    description: description
+                };
+                
+                calendarEvents.push(newEvent);
+                saveCalendarEvents();
+                renderCalendar();
+                
+                document.getElementById('event-date').value = '';
+                document.getElementById('event-title').value = '';
+                document.getElementById('event-description').value = '';
+            });
+        }
+
+
+        function updateAcademicStats() {
+            document.getElementById('total-subjects').textContent = subjects.length;
+            
+            if (subjects.length > 0) {
+                const totalPercentage = subjects.reduce((sum, s) => {
+                    if (s.total === 0) return sum;
+                    return sum + (s.attended / s.total) * 100;
+                }, 0);
+                const avgPercentage = (totalPercentage / subjects.length).toFixed(1);
+                document.getElementById('avg-attendance').textContent = `${avgPercentage}%`;
+            } else {
+                document.getElementById('avg-attendance').textContent = '0%';
+            }
+            
+            document.getElementById('total-credits').textContent = subjects.length * 3;
+        }
+
+        function setupAcademic() {
+            const semesterButtons = document.querySelectorAll('.semester-btn');
+            semesterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    semesterButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const semester = this.getAttribute('data-semester');
+                    const semesterData = {
+                        'fall2024': { name: 'Fall 2024', start: 'Aug 26, 2024', end: 'Dec 15, 2024' },
+                        'spring2025': { name: 'Spring 2025', start: 'Jan 15, 2025', end: 'May 10, 2025' },
+                        'summer2025': { name: 'Summer 2025', start: 'May 20, 2025', end: 'Aug 5, 2025' }
+                    };
+                    
+                    const data = semesterData[semester] || semesterData['fall2024'];
+                    document.getElementById('current-semester').textContent = data.name;
+                    document.getElementById('semester-start').textContent = data.start;
+                    document.getElementById('semester-end').textContent = data.end;
+                });
+            });
+        }
+
+
+        function setupNavigation() {
+            const calendarBtn = document.getElementById('calendar-btn');
+            const academicBtn = document.getElementById('academic-btn');
+            const attendanceSection = document.getElementById('attendance-section');
+            const calendarSection = document.getElementById('calendar-section');
+            const academicSection = document.getElementById('academic-section');
+            
+            function showSection(section) {
+                [attendanceSection, calendarSection, academicSection].forEach(s => {
+                    s.classList.remove('active');
+                });
+                section.classList.add('active');
+            }
+            
+            calendarBtn.addEventListener('click', () => {
+                showSection(calendarSection);
+                renderCalendar();
+            });
+            
+            academicBtn.addEventListener('click', () => {
+                showSection(academicSection);
+                updateAcademicStats();
+            });
+            
+ 
+            document.querySelector('.header h1').style.cursor = 'pointer';
+            document.querySelector('.header h1').addEventListener('click', () => {
+                showSection(attendanceSection);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuthentication()) return;
+            loadHistory();
+            loadSubjects();
+            loadCalendarEvents();
+            setupModals();
+            setupLogout();
+            setupCalendar();
+            setupAcademic();
+            setupNavigation();
+            updateSubscriptionUI();
+            updateAcademicStats();
+            renderCalendar();
+        });
+    </script>
+</body>
+</html>
+
